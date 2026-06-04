@@ -1,6 +1,6 @@
 # G4T0XX Portfolio
 
-Portfolio profissional de GABRIEL SORENSEN / G4T0XX com visual hacker, React, Vite e Framer Motion.
+Portfolio profissional de engenharia de software de GABRIEL SORENSEN / G4T0XX com React, Vite, Framer Motion e direção visual inspirada em HyperFrames.
 
 - Site: https://gabrielmsorensen.github.io/g4t0xx-portfolio/
 - Repositorio: https://github.com/GABRIELMSORENSEN/g4t0xx-portfolio

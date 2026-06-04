@@ -4,6 +4,11 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   base: './',
   plugins: [react()],
+  server: {
+    watch: {
+      ignored: ['**/.agents/**', '**/skills-lock.json'],
+    },
+  },
   build: {
     outDir: 'docs',
     emptyOutDir: true,
