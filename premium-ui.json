@@ -1,0 +1,16 @@
+{
+  "profile": "marketing",
+  "sourceRoots": [
+    "src"
+  ],
+  "locale": "pt-BR",
+  "commands": {
+    "runtime": "python scripts/verify_browser.py"
+  },
+  "requiredCommands": [
+    "runtime"
+  ],
+  "evidence": {
+    "responsive": "scripts/verify_browser.py"
+  }
+}

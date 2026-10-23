@@ -24,3 +24,6 @@ skills-lock.json
 *.njsproj
 *.sln
 *.sw?
+
+reports/
+premium-audit.json

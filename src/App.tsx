@@ -30,6 +30,11 @@ import {
   useTransform,
 } from 'framer-motion'
 import './App.css'
+import { projects } from './projects'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 type IconComponent = ComponentType<{
   size?: number
@@ -40,16 +45,7 @@ type IconComponent = ComponentType<{
 type Skill = {
   name: string
   detail: string
-  level: number
   icon: IconComponent
-}
-
-type Project = {
-  name: string
-  status: string
-  detail: string
-  stack: string[]
-  href?: string
 }
 
 type ToolLogo = {
@@ -71,37 +67,31 @@ const skills: Skill[] = [
   {
     name: 'Mobile engineering',
     detail: 'Android, Capacitor, camera, offline-first, APK e release',
-    level: 96,
     icon: Smartphone,
   },
   {
     name: 'Frontend systems',
     detail: 'React, Vite, Framer Motion e interfaces profissionais',
-    level: 95,
     icon: Layers3,
   },
   {
     name: 'Automation pipelines',
     detail: 'filas, APIs, recoveries, schedulers e rotinas confiaveis',
-    level: 92,
     icon: Bot,
   },
   {
     name: 'Applied AI',
     detail: 'voz, visao, agentes, OCR, captura de tela e ML Kit',
-    level: 89,
     icon: Cpu,
   },
   {
     name: 'Realtime systems',
     detail: 'OSC, UDP, pose detection, VRChat e full body tracking',
-    level: 86,
     icon: RadioTower,
   },
   {
     name: 'Release engineering',
     detail: 'GitHub Pages, Releases, builds, APKs e handoff iOS',
-    level: 91,
     icon: Rocket,
   },
 ]
@@ -125,60 +115,11 @@ const tools: ToolLogo[] = [
   { name: 'GitHub Pages', code: 'PG', tone: '#fb5607' },
 ]
 
-const projects: Project[] = [
-  {
-    name: 'G4T0XX Music Player',
-    status: 'mobile release',
-    detail:
-      'Produto mobile com player, downloads, UX Android e fluxo de distribuicao.',
-    stack: ['React', 'Capacitor', 'Android', 'Releases'],
-    href: 'https://github.com/GABRIELMSORENSEN/G4T0XX-Music-Player',
-  },
-  {
-    name: 'G4 Docs Editor',
-    status: 'web app',
-    detail:
-      'Editor PDF local com interface desktop, build estatico e publicacao web.',
-    stack: ['PDF', 'Desktop', 'Pages', 'UI'],
-    href: 'https://github.com/GABRIELMSORENSEN/g4-docs-editor',
-  },
-  {
-    name: 'POLIGON Assistant AI',
-    status: 'ai desktop',
-    detail:
-      'Assistente desktop com voz neural, visao computacional e leitura de contexto.',
-    stack: ['AI', 'Voice', 'Vision', 'Desktop'],
-    href: 'https://github.com/GABRIELMSORENSEN/POLIGON-ASSISTENT-AI',
-  },
-  {
-    name: 'NetTunnel Pro',
-    status: 'network app',
-    detail:
-      'Aplicativo de rede com Xray-core, Capacitor e Android VpnService.',
-    stack: ['VPN', 'Xray-core', 'Capacitor', 'Android'],
-    href: 'https://github.com/GABRIELMSORENSEN/nettunnel-pro',
-  },
-  {
-    name: 'G4T0XX Hybrid FBT',
-    status: 'realtime',
-    detail:
-      'Sistema realtime para full body tracking, Quest 3S, VRChat, camera e OSC.',
-    stack: ['CameraX', 'ML Kit', 'OSC', 'VRChat'],
-  },
-  {
-    name: 'SonicTubeOcf Pipeline',
-    status: 'pipeline',
-    detail:
-      'Pipeline operacional com narracao, recoveries, fila e agendamento no YouTube.',
-    stack: ['Python', 'ElevenLabs', 'YouTube API', 'Scheduler'],
-  },
-]
-
 const stats = [
-  ['public repos', '09'],
-  ['product builds', '04+'],
-  ['motion system', 'HyperFrames'],
-  ['delivery', 'online'],
+  ['projetos em destaque', String(projects.length).padStart(2, '0')],
+  ['áreas de atuação', 'Desktop / Android / VR'],
+  ['desenvolvimento', 'em evolução'],
+  ['identidade', 'G4T0XX'],
 ]
 
 const nav = [
@@ -191,9 +132,9 @@ const nav = [
 ]
 
 const terminalLines = [
-  '$ start engineering-portfolio --profile G4T0XX',
-  'focus: product engineering, automation, mobile, AI',
-  'delivery: validated build / GitHub Pages online',
+  '$ G4T0XX / projetos e experimentos',
+  'foco: aprender, construir e evoluir ferramentas',
+  'projetos: desktop / Android / realidade virtual',
 ]
 
 const introCells = Array.from({ length: 96 }, (_, index) => index)
@@ -206,6 +147,19 @@ const reveal = {
 
 function App() {
   const [introActive, setIntroActive] = useState(true)
+  const [category, setCategory] = useState('Todos')
+  const visibleProjects = projects.filter(project => category === 'Todos' || project.category === category)
+
+  useEffect(() => {
+    const context = gsap.context(() => {
+      const media = gsap.matchMedia()
+      media.add('(prefers-reduced-motion: no-preference)', () => {
+        gsap.fromTo('.hero-bg', { scale: 0.94, opacity: 0.75 }, { scale: 1, opacity: 0.2, scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } })
+        gsap.fromTo('.scrub-copy > p:last-child', { opacity: 0.35 }, { opacity: 1, scrollTrigger: { trigger: '.computer-scrub', start: 'top 80%', end: 'top 30%', scrub: true } })
+      })
+    })
+    return () => context.revert()
+  }, [])
   const shouldReduceMotion = useReducedMotion()
   const mouseX = useMotionValue(50)
   const mouseY = useMotionValue(50)
@@ -227,6 +181,7 @@ function App() {
 
   return (
     <main className="shell" onPointerMove={handlePointerMove}>
+      <a className="skip-link" href="#apps">Pular para os projetos</a>
       {!shouldReduceMotion && introActive && <IntroWipe />}
       <motion.div
         className="pointer-field"
@@ -269,16 +224,14 @@ function App() {
           }}
         >
           <motion.p className="handle-line" variants={reveal}>
-            Software Engineer // Product Builder // Release Operator
+            Gabriel Sorensen · Desenvolvedor de software
           </motion.p>
           <motion.h1 variants={reveal}>
-            {profile.name}
-            <span> / {profile.handle}</span>
+            {profile.handle}<span>Ideias em construção.</span>
           </motion.h1>
           <motion.p className="hero-text" variants={reveal}>
-            Construo produtos digitais com foco em engenharia de software:
-            arquitetura clara, interfaces modernas, automacoes confiaveis,
-            builds testados e publicacao pronta para empresas avaliarem.
+            Desenvolvo ferramentas para desktop, Android e realidade virtual.
+            Aqui você acompanha meus projetos, experimentos e aplicativos disponíveis para baixar.
           </motion.p>
           <motion.div className="magnetic-row" variants={reveal}>
             <MagneticText text="CREATE" hoverText="ELEVATE" />
@@ -287,12 +240,12 @@ function App() {
           <motion.div className="hero-actions" variants={reveal}>
             <motion.a
               className="primary-action"
-              href="#core"
+              href="#apps"
               whileHover={shouldReduceMotion ? undefined : { y: -3 }}
               whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
             >
               <Rocket size={19} strokeWidth={1.8} />
-              Ver arquitetura
+              Explorar projetos
             </motion.a>
             <motion.a
               className="secondary-action"
@@ -394,10 +347,14 @@ function App() {
         <SectionTitle
           icon={Rocket}
           title="Projetos como cases"
-          text="Produtos e ferramentas com valor claro para empresas: mobile, desktop, IA, automacao, realtime e deploy."
+          text="Aplicativos, experimentos e projetos em evolução. Cada projeto indica seu estágio e os downloads disponíveis."
         />
+        <div className="project-filters" role="group" aria-label="Filtrar projetos">
+          {['Todos', 'Desktop', 'Android', 'VR & IA'].map(item => <button key={item} type="button" aria-pressed={category === item} onClick={() => setCategory(item)}>{item}</button>)}
+        </div>
+        <p className="project-count" role="status">{visibleProjects.length} projetos · repositórios privados identificados</p>
         <div className="project-grid">
-          {projects.map((project, index) => (
+          {visibleProjects.map((project, index) => (
             <RevealCard key={project.name} delay={index * 0.05}>
               <article className="project-card">
                 <div className="project-head">
@@ -421,6 +378,11 @@ function App() {
                   {project.stack.map((item) => (
                     <span key={item}>{item}</span>
                   ))}
+                </div>
+                <div className="project-actions">
+                  {project.href && <a href={project.href} target="_blank" rel="noreferrer">Ver projeto <ExternalLink size={15} /></a>}
+                  {project.download && <a href={project.download} target="_blank" rel="noreferrer">Downloads <Rocket size={15} /></a>}
+                  {!project.href && <span>Código privado</span>}
                 </div>
               </article>
             </RevealCard>
@@ -734,13 +696,14 @@ function SectionTitle({
   title: string
   text: string
 }) {
+  const shouldReduceMotion = useReducedMotion()
   return (
     <motion.div
       className="section-title"
-      initial={{ opacity: 0, y: 18 }}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.35 }}
-      transition={{ duration: 0.55 }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.55 }}
     >
       <Icon size={25} strokeWidth={1.8} />
       <div>
@@ -762,10 +725,10 @@ function RevealCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.22 }}
-      transition={{ duration: shouldReduceMotion ? 0 : 0.54, delay }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.54, delay: shouldReduceMotion ? 0 : delay }}
     >
       {children}
     </motion.div>
@@ -787,14 +750,6 @@ function SkillCard({ skill }: { skill: Skill }) {
       </div>
       <h3>{skill.name}</h3>
       <p>{skill.detail}</p>
-      <div className="skill-meter" aria-label={`${skill.level}%`}>
-        <motion.span
-          initial={{ width: 0 }}
-          whileInView={{ width: `${skill.level}%` }}
-          viewport={{ once: true }}
-          transition={{ duration: shouldReduceMotion ? 0 : 0.9, ease: 'easeOut' }}
-        />
-      </div>
     </motion.article>
   )
 }
