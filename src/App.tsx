@@ -31,10 +31,6 @@ import {
 } from 'framer-motion'
 import './App.css'
 import { projects } from './projects'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
 
 type IconComponent = ComponentType<{
   size?: number
@@ -45,6 +41,7 @@ type IconComponent = ComponentType<{
 type Skill = {
   name: string
   detail: string
+  level: number
   icon: IconComponent
 }
 
@@ -67,31 +64,37 @@ const skills: Skill[] = [
   {
     name: 'Mobile engineering',
     detail: 'Android, Capacitor, camera, offline-first, APK e release',
+    level: 96,
     icon: Smartphone,
   },
   {
     name: 'Frontend systems',
     detail: 'React, Vite, Framer Motion e interfaces profissionais',
+    level: 95,
     icon: Layers3,
   },
   {
     name: 'Automation pipelines',
     detail: 'filas, APIs, recoveries, schedulers e rotinas confiaveis',
+    level: 92,
     icon: Bot,
   },
   {
     name: 'Applied AI',
     detail: 'voz, visao, agentes, OCR, captura de tela e ML Kit',
+    level: 89,
     icon: Cpu,
   },
   {
     name: 'Realtime systems',
     detail: 'OSC, UDP, pose detection, VRChat e full body tracking',
+    level: 86,
     icon: RadioTower,
   },
   {
     name: 'Release engineering',
     detail: 'GitHub Pages, Releases, builds, APKs e handoff iOS',
+    level: 91,
     icon: Rocket,
   },
 ]
@@ -116,10 +119,10 @@ const tools: ToolLogo[] = [
 ]
 
 const stats = [
-  ['projetos em destaque', String(projects.length).padStart(2, '0')],
-  ['áreas de atuação', 'Desktop / Android / VR'],
-  ['desenvolvimento', 'em evolução'],
-  ['identidade', 'G4T0XX'],
+  ['projetos', String(projects.length).padStart(2, '0')],
+  ['product builds', '04+'],
+  ['motion system', 'HyperFrames'],
+  ['delivery', 'online'],
 ]
 
 const nav = [
@@ -132,9 +135,9 @@ const nav = [
 ]
 
 const terminalLines = [
-  '$ G4T0XX / projetos e experimentos',
-  'foco: aprender, construir e evoluir ferramentas',
-  'projetos: desktop / Android / realidade virtual',
+  '$ start engineering-portfolio --profile G4T0XX',
+  'focus: product engineering, automation, mobile, AI',
+  'delivery: validated build / GitHub Pages online',
 ]
 
 const introCells = Array.from({ length: 96 }, (_, index) => index)
@@ -147,19 +150,6 @@ const reveal = {
 
 function App() {
   const [introActive, setIntroActive] = useState(true)
-  const [category, setCategory] = useState('Todos')
-  const visibleProjects = projects.filter(project => category === 'Todos' || project.category === category)
-
-  useEffect(() => {
-    const context = gsap.context(() => {
-      const media = gsap.matchMedia()
-      media.add('(prefers-reduced-motion: no-preference)', () => {
-        gsap.fromTo('.hero-bg', { scale: 0.94, opacity: 0.75 }, { scale: 1, opacity: 0.2, scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } })
-        gsap.fromTo('.scrub-copy > p:last-child', { opacity: 0.35 }, { opacity: 1, scrollTrigger: { trigger: '.computer-scrub', start: 'top 80%', end: 'top 30%', scrub: true } })
-      })
-    })
-    return () => context.revert()
-  }, [])
   const shouldReduceMotion = useReducedMotion()
   const mouseX = useMotionValue(50)
   const mouseY = useMotionValue(50)
@@ -181,7 +171,6 @@ function App() {
 
   return (
     <main className="shell" onPointerMove={handlePointerMove}>
-      <a className="skip-link" href="#apps">Pular para os projetos</a>
       {!shouldReduceMotion && introActive && <IntroWipe />}
       <motion.div
         className="pointer-field"
@@ -224,14 +213,16 @@ function App() {
           }}
         >
           <motion.p className="handle-line" variants={reveal}>
-            Gabriel Sorensen · Desenvolvedor de software
+            Software Engineer // Product Builder // Release Operator
           </motion.p>
           <motion.h1 variants={reveal}>
-            {profile.handle}<span>Ideias em construção.</span>
+            {profile.name}
+            <span> / {profile.handle}</span>
           </motion.h1>
           <motion.p className="hero-text" variants={reveal}>
-            Desenvolvo ferramentas para desktop, Android e realidade virtual.
-            Aqui você acompanha meus projetos, experimentos e aplicativos disponíveis para baixar.
+            Construo produtos digitais com foco em engenharia de software:
+            arquitetura clara, interfaces modernas, automacoes confiaveis,
+            builds testados e publicacao pronta para empresas avaliarem.
           </motion.p>
           <motion.div className="magnetic-row" variants={reveal}>
             <MagneticText text="CREATE" hoverText="ELEVATE" />
@@ -240,12 +231,12 @@ function App() {
           <motion.div className="hero-actions" variants={reveal}>
             <motion.a
               className="primary-action"
-              href="#apps"
+              href="#core"
               whileHover={shouldReduceMotion ? undefined : { y: -3 }}
               whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
             >
               <Rocket size={19} strokeWidth={1.8} />
-              Explorar projetos
+              Ver arquitetura
             </motion.a>
             <motion.a
               className="secondary-action"
@@ -347,14 +338,10 @@ function App() {
         <SectionTitle
           icon={Rocket}
           title="Projetos como cases"
-          text="Aplicativos, experimentos e projetos em evolução. Cada projeto indica seu estágio e os downloads disponíveis."
+          text="Produtos e ferramentas com valor claro para empresas: mobile, desktop, IA, automacao, realtime e deploy."
         />
-        <div className="project-filters" role="group" aria-label="Filtrar projetos">
-          {['Todos', 'Desktop', 'Android', 'VR & IA'].map(item => <button key={item} type="button" aria-pressed={category === item} onClick={() => setCategory(item)}>{item}</button>)}
-        </div>
-        <p className="project-count" role="status">{visibleProjects.length} projetos · repositórios privados identificados</p>
         <div className="project-grid">
-          {visibleProjects.map((project, index) => (
+          {projects.map((project, index) => (
             <RevealCard key={project.name} delay={index * 0.05}>
               <article className="project-card">
                 <div className="project-head">
@@ -378,11 +365,6 @@ function App() {
                   {project.stack.map((item) => (
                     <span key={item}>{item}</span>
                   ))}
-                </div>
-                <div className="project-actions">
-                  {project.href && <a href={project.href} target="_blank" rel="noreferrer">Ver projeto <ExternalLink size={15} /></a>}
-                  {project.download && <a href={project.download} target="_blank" rel="noreferrer">Downloads <Rocket size={15} /></a>}
-                  {!project.href && <span>Código privado</span>}
                 </div>
               </article>
             </RevealCard>
@@ -696,14 +678,13 @@ function SectionTitle({
   title: string
   text: string
 }) {
-  const shouldReduceMotion = useReducedMotion()
   return (
     <motion.div
       className="section-title"
-      initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+      initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.35 }}
-      transition={{ duration: shouldReduceMotion ? 0 : 0.55 }}
+      transition={{ duration: 0.55 }}
     >
       <Icon size={25} strokeWidth={1.8} />
       <div>
@@ -725,10 +706,10 @@ function RevealCard({
 
   return (
     <motion.div
-      initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.22 }}
-      transition={{ duration: shouldReduceMotion ? 0 : 0.54, delay: shouldReduceMotion ? 0 : delay }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.54, delay }}
     >
       {children}
     </motion.div>
@@ -750,6 +731,14 @@ function SkillCard({ skill }: { skill: Skill }) {
       </div>
       <h3>{skill.name}</h3>
       <p>{skill.detail}</p>
+      <div className="skill-meter" aria-label={`${skill.level}%`}>
+        <motion.span
+          initial={{ width: 0 }}
+          whileInView={{ width: `${skill.level}%` }}
+          viewport={{ once: true }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.9, ease: 'easeOut' }}
+        />
+      </div>
     </motion.article>
   )
 }
