@@ -1,7 +1,9 @@
-# G4T0XX Portfolio
+# Portfólio G4T0XX — visual original publicado
 
-Referência visual aprovada: commit `9e8860a` (Deploy user portfolio design).
+Referência aprovada: **`9e8860a:docs/index.html`**. O HTML publicado é diferente do código React em `src/`; restaurar `src/` não restaura o site original.
 
-O usuário solicitou preservar integralmente o visual anterior. Alterações autorizadas: conteúdo, projetos, descrições e links. Não redesenhar, trocar tipografia, mudar o hero, espaçamentos, grades, cores, animações ou adicionar filtros.
+Fonte ativa: `site/index.html`. `npm run build` copia esse HTML para `docs/index.html`, publicado pelo GitHub Pages. Não substituir por um build React/Vite.
 
-`src/App.css` e `src/index.css` são idênticos à referência. `src/App.tsx` conserva o layout, os componentes, a apresentação e as animações anteriores. A lista atualizada vive em `src/projects.ts` e preserva os seis projetos originais, somando cinco novos. Repositórios privados não recebem links públicos quebrados.
+Preservar integralmente os estilos, scripts, tipografia Bebas Neue/JetBrains Mono, computador 3D com monitorFloat, cursor, intro, grids, reveals e todos os layouts da referência. Só atualizar informações e acrescentar projetos com as classes de cards existentes.
+
+Os quatro projetos originais permanecem intactos. Oito projetos foram adicionados. CSS e JavaScript inline são idênticos à referência aprovada. NetTunnel e Modmenu usam as bases originais recuperadas; links de versões substitutas foram removidos.
